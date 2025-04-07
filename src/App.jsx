@@ -29,13 +29,39 @@ const initialProducts = [
   }
 ];
 
-function App() {
 
- 
+
+function App() {
+  const [products, setProducts] = useState(initialProducts);
+
+  const handleRatingSubmit = (productId, newRating) => {
+    setProducts(prevProducts => {
+      return prevProducts.map(product => {
+        if (product.id === productId) {
+          const newAvgRating = ((product.avgRating * product.totalRatings) + newRating) / (product.totalRatings + 1);
+          return {
+            ...product,
+            avgRating: newAvgRating,
+            totalRatings: product.totalRatings + 1
+          };
+        }
+        return product;
+      });
+    });
+  };
 
   return (
-    <div>
-     {/* code here */}
+    <div className="app">
+      <h1>Product Ratings</h1>
+      <div className="products-grid">
+        {products.map(product => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            onRatingSubmit={handleRatingSubmit}
+          />
+        ))}
+      </div>
     </div>
   );
 }
